@@ -1,0 +1,48 @@
+{% load filter_tags %}
+
+<tr id="product-{{ product.product }}">
+  <td>{{ product.product }}</td>
+  <td>{{ product.product__product_desc }}</td>
+  <td>{{ product.branches_stocking|value_formatter:"count" }}</td>
+  <td>{{ product.branches_selling|value_formatter:"count" }}</td>
+  <td>{{ product.total_30_day_sales|value_formatter:"count" }}</td>
+  <td>{{ product.avg_30_day_sale|value_formatter:"count" }}</td>
+  <td>{{ product.product__vap_flag }}</td>
+  <td>
+    <input type="checkbox"
+           name="rsl_flag"
+           class="form-check-input m-0 p-0"
+           value="on"
+           {% if product.rsl_flag %}checked{% endif %}
+           hx-post="{% url 'prodbranch_setting_management:update_pending_change' region_slug=region.slug product_id=product.product %}"
+           hx-trigger="change"
+           hx-target="#product-{{ product.product }}"
+           hx-swap="outerHTML" />
+  </td>
+  <td>
+    <input type="number"
+           name="rsl_initial"
+           class="form-control form-control-sm"
+           value="{{ product.rsl_initial }}"
+           {% if not product.rsl_flag %}readonly{% endif %}
+           hx-post="{% url 'prodbranch_setting_management:update_pending_change' region_slug=region.slug product_id=product.product %}"
+           hx-trigger="change"
+           hx-include="[name='rsl_flag']"
+           hx-target="#product-{{ product.product }}"
+           hx-swap="outerHTML" />
+  </td>
+  <td>{{ product.calculated_rsl_cost|value_formatter:"dollars" }}</td>
+  <td>{{ product.additional_rsl_cost|value_formatter:"dollars" }}</td>
+  <td>
+    <a class="btn btn-primary btn-sm d-flex align-items-center ms-auto px-2 py-1"
+       data-bs-toggle="modal"
+       data-bs-target="#BranchStockingList"
+       hx-get="{% url 'prodbranch_setting_management:regional_stock_list_branches_stocking' region_slug=region.slug product_id=product.product %}"
+       hx-trigger="click"
+       hx-target="#branch-stocking-list"
+       hx-swap="innerHTML"
+       hx-indicator="#spinner">
+      <i class="bi bi-shop-window me-1"></i>
+    </a>
+  </td>
+</tr>

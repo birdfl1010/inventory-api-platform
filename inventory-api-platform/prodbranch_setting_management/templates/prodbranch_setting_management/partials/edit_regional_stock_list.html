@@ -1,0 +1,33 @@
+{% load filter_tags %}
+
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <div class="d-flex align-items-center flex-wrap gap-2">
+    <span class="badge bg-primary text-white fs-6">
+      <i class="bi bi-building me-1"></i> Branches: <strong>{{ overall_metrics.num_branches|value_formatter:"count" }}</strong>
+    </span>
+    <span class="badge bg-success text-white fs-6">
+      <i class="bi bi-box-seam me-1"></i> Stocked Items: <strong>{{ overall_metrics.stocked_items|value_formatter:"count" }}</strong>
+    </span>
+    <span class="badge bg-warning text-dark fs-6">
+      <i class="bi bi-calculator me-1"></i> Avg Stock/Branch: <strong>{{ overall_metrics.avg_stocked|value_formatter:"count" }}</strong>
+    </span>
+    <span class="badge bg-info text-white fs-6">
+      <i class="bi bi-list me-1"></i> RSL Items: <strong>{{ overall_metrics.num_rsl_items|value_formatter:"count" }}</strong>
+    </span>
+    <span class="badge bg-secondary text-white fs-6">
+      <i class="bi bi-graph-up-arrow me-1"></i> Compliancy: <strong>{{ overall_metrics.compliancy_percent|value_formatter:"percent" }}</strong>
+    </span>
+  </div>
+</div>
+<!-- Product Table Container -->
+<div id="regional-stock-list-rows" hx-target="this">
+  <div hx-get="{% url 'prodbranch_setting_management:load_regional_stock_list_rows' region_slug=region.slug %}"
+       hx-trigger="load"
+       hx-target="this">{% include 'partials/loading_box.html' %}</div>
+</div>
+<!-- Pagination Controls Container -->
+<div id="regional-stock-list-pagination" hx-target="this">
+  <div hx-get="{% url 'prodbranch_setting_management:load_regonal_stock_list_pagination_controls' region_slug=region.slug %}"
+       hx-trigger="load"
+       hx-target="this">{% include 'partials/loading_box.html' %}</div>
+</div>

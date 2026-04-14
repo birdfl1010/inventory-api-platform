@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h1 class="modal-title fs-5">Select Product</h1>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <form onsubmit="return false;">
+    <div class="mb-3 position-relative">
+      <label for="product-search" class="form-label fw-bold">Search Product</label>
+      <input type="text"
+             class="form-control"
+             id="product-search"
+             name="product_search"
+             hx-get="{% url 'prodbranch_setting_management:search_prod_branch_options' branch=branch %}"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#product-options"
+             hx-swap="innerHTML"
+             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+             placeholder="Start typing product ID, description, etc."
+             autocomplete="off"
+             required />
+      <div id="product-options" class="dropdown-menu show"></div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

@@ -1,0 +1,343 @@
+<div class="row mb-1">
+  <!-- Search Input -->
+  <div class="col-md-6">
+    <input type="text"
+           id="search-input"
+           class="form-control"
+           placeholder="Search Product ID, Description, Model..."
+           name="search_query"
+           value="{{ request.GET.search_query|default:'' }}"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}"
+           hx-trigger="keyup changed input delay:300ms"
+           hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+           hx-target="#setting-list"
+           hx-swap="outerHTML"
+           hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_applied_filters' %}?search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#applied-filters', swap: 'outerHTML'} ); " />
+  </div>
+  <!-- BuyLine Typeahead Input -->
+  <div class="col-md-2">
+    <form onsubmit="return false;">
+      <div class="position-relative">
+        <input type="text"
+               id="buy_line-search"
+               class="form-control"
+               name="buy_line_filter"
+               value="{{ request.GET.buy_line_filter|default:'' }}"
+               hx-get="{% url 'prodbranch_setting_management:search_line_options' line_type='buy_line' branch=branch.pk %}"
+               hx-trigger="keyup changed delay:500ms"
+               hx-target="#buy_line-options"
+               hx-swap="innerHTML"
+               autocomplete="off"
+               placeholder="Search Buy Line"
+               oninput="if(this.value===''){document.getElementById('buy_line-options').innerHTML=''; var searchVal = encodeURIComponent(document.getElementById('search-input').value); var reviewVal = encodeURIComponent(document.getElementById('review-filter').value); var buyLineVal = encodeURIComponent(document.getElementById('buy_line-search').value); var priceLineVal = encodeURIComponent(document.getElementById('price_line-search').value); var vapVal = (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : ''); var rslVal = (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : ''); var sortFieldVal = encodeURIComponent(document.querySelector('#sort-field').value); var sortDirectionVal = encodeURIComponent(document.querySelector('#sort-direction').value); var rowsUrl = '{% url "prodbranch_setting_management:load_formset_rows" branch.pk %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; var pagUrl = '{% url "prodbranch_setting_management:load_pagination_controls" branch.pk %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; var appliedUrl = '{% url "prodbranch_setting_management:load_applied_filters" %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; htmx.ajax('GET', rowsUrl, {target:'#setting-list', swap:'outerHTML'}).then(function(){return htmx.ajax('GET', appliedUrl, {target:'#applied-filters', swap:'outerHTML'});}).then(function(){htmx.ajax('GET', pagUrl, {target:'#pagination-controls', swap:'outerHTML'});}); return false; }" />
+        <div id="buy_line-options" class="dropdown-menu"></div>
+      </div>
+    </form>
+  </div>
+  <!-- PriceLine Typeahead Input -->
+  <div class="col-md-2">
+    <form onsubmit="return false;">
+      <div class="position-relative">
+        <input type="text"
+               id="price_line-search"
+               class="form-control"
+               name="price_line_filter"
+               value="{{ request.GET.price_line_filter|default:'' }}"
+               hx-get="{% url 'prodbranch_setting_management:search_line_options' line_type='price_line' branch=branch.pk %}"
+               hx-trigger="keyup changed delay:500ms"
+               hx-target="#price_line-options"
+               hx-swap="innerHTML"
+               autocomplete="off"
+               placeholder="Search Price Line"
+               oninput="if(this.value===''){document.getElementById('price_line-options').innerHTML=''; var searchVal = encodeURIComponent(document.getElementById('search-input').value); var reviewVal = encodeURIComponent(document.getElementById('review-filter').value); var buyLineVal = encodeURIComponent(document.getElementById('buy_line-search').value); var priceLineVal = encodeURIComponent(document.getElementById('price_line-search').value); var vapVal = (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : ''); var rslVal = (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : ''); var sortFieldVal = encodeURIComponent(document.querySelector('#sort-field').value); var sortDirectionVal = encodeURIComponent(document.querySelector('#sort-direction').value); var rowsUrl = '{% url "prodbranch_setting_management:load_formset_rows" branch.pk %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; var pagUrl = '{% url "prodbranch_setting_management:load_pagination_controls" branch.pk %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; var appliedUrl = '{% url "prodbranch_setting_management:load_applied_filters" %}?search_query=' + searchVal + '&review_filter=' + reviewVal + '&buy_line_filter=' + buyLineVal + '&price_line_filter=' + priceLineVal + '&vap_filter=' + vapVal + '&rsl_filter=' + rslVal + '&sort_field=' + sortFieldVal + '&sort_direction=' + sortDirectionVal; htmx.ajax('GET', rowsUrl, {target:'#setting-list', swap:'outerHTML'}).then(function(){return htmx.ajax('GET', appliedUrl, {target:'#applied-filters', swap:'outerHTML'});}).then(function(){htmx.ajax('GET', pagUrl, {target:'#pagination-controls', swap:'outerHTML'});}); return false; }" />
+        <div id="price_line-options" class="dropdown-menu"></div>
+      </div>
+    </form>
+  </div>
+  <div class="col-md-2">
+    <button type="button"
+            class="btn btn-outline-secondary"
+            data-bs-toggle="modal"
+            data-bs-target="#advancedFiltersModal">
+      <i class="bi bi-funnel"></i>Advanced Filters <i class="bi bi-plus small"></i> <i class="bi bi-sort-down"></i>Sorting
+    </button>
+  </div>
+</div>
+<div class="modal fade"
+     id="advancedFiltersModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="advancedFiltersModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!-- Use hx-get to update your list when the form is submitted -->
+    <form id="advanced-filters-form"
+          hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}"
+          hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+          hx-target="#setting-list"
+          hx-swap="outerHTML"
+          hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_applied_filters' %}?search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#applied-filters', swap: 'outerHTML'} ); ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="advancedFiltersModalLabel">
+            <i class="bi bi-funnel"></i>Advanced Filters <i class="bi bi-plus small"></i> <i class="bi bi-sort-down"></i>Sorting
+          </h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- ProdBranch Review Dropdown -->
+          <div class="mb-3">
+            <label for="review-filter" class="form-label">Review Filters</label>
+            <select id="review-filter"
+                    class="form-control"
+                    name="review_filter"
+                    value="{{ request.GET.review_filter|default:'' }}">
+              <option value="">All Products</option>
+              {% for value, label in prodbranch_review_filters.choices %}
+                <option value="{{ value }}"
+                        {% if request.GET.review_filter == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <!-- VAP Filter -->
+          <div class="mb-3">
+            <label class="form-label">VAP Filters</label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="vap_filter"
+                       id="vap_filter_all"
+                       value="" />
+                <label class="form-check-label" for="vap_filter_all">All Products</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="vap_filter"
+                       id="vap_filter_only"
+                       value="1" />
+                <label class="form-check-label" for="vap_filter_only">Only VAP</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="vap_filter"
+                       id="vap_filter_exclude"
+                       value="2" />
+                <label class="form-check-label" for="vap_filter_exclude">Exclude VAP</label>
+              </div>
+            </div>
+          </div>
+          <!-- RSL Filter -->
+          <div class="mb-3">
+            <label class="form-label">RSL Filters</label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="rsl_filter"
+                       id="rsl_filter_all"
+                       value="" />
+                <label class="form-check-label" for="rsl_filter_all">All Products</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="rsl_filter"
+                       id="rsl_filter_only"
+                       value="1" />
+                <label class="form-check-label" for="rsl_filter_only">Only RSL</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input"
+                       type="radio"
+                       name="rsl_filter"
+                       id="rsl_filter_exclude"
+                       value="2" />
+                <label class="form-check-label" for="rsl_filter_exclude">Exclude RSL</label>
+              </div>
+            </div>
+          </div>
+          <!-- Sorting Options -->
+          <div class="mb-3">
+            <label for="sort-field" class="form-label">Sort Field</label>
+            <select id="sort-field" name="sort_field" class="form-select">
+              <option value="">Default</option>
+              {% for value, label in prodbranch_sorting.choices %}
+                <option value="{{ value }}"
+                        {% if request.GET.fort_field == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+              <!-- Add more sort fields as needed -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="sort-direction" class="form-label">Sort Direction</label>
+            <select id="sort-direction" name="sort_direction" class="form-select">
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="applied-filters"
+     hx-get="{% url 'prodbranch_setting_management:load_applied_filters' %}"
+     hx-trigger="load"
+     hx-target="this"
+     hx-swap="outerHTML"></div>
+<div class="table-responsive mb-1 table-responsive-scroll position-relative">
+  <table id="dynamic-setting-table"
+         class="table table-sm table-striped table-hover table-bordered table-light mb-0">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>
+          <div class="d-flex justify-content-between align-items-end">
+            <span>Description</span>
+            <div class="d-flex flex-column text-end small text-muted">
+              <span><span class="badge bg-primary text-light">RSL</span> Regional Stock List</span>
+              <span><span class="badge bg-primary text-light">VAP</span> Value Added Product</span>
+            </div>
+          </div>
+        </th>
+        <th class="d-none d-sm-table-cell">Model</th>
+        <th class="d-none d-sm-table-cell">Buy Line</th>
+        <th class="d-none d-sm-table-cell">Stock Flag</th>
+        <th class="d-none d-sm-table-cell">Rank</th>
+        <th class="d-none d-sm-table-cell">Cost</th>
+        <th class="d-none d-sm-table-cell">Demand</th>
+        <th class="d-none d-sm-table-cell">Sales Qty 30D</th>
+        <th class="d-none d-sm-table-cell">Order Point</th>
+        <th class="d-none d-sm-table-cell">Line Point</th>
+        <th class="d-none d-sm-table-cell">Buy Pack Qty</th>
+        <th class="d-none d-sm-table-cell">Buy Pack Divisible</th>
+        <th class="d-none d-sm-table-cell">Minimum</th>
+        <th class="d-none d-sm-table-cell">Maximum</th>
+        <th class="d-none d-sm-table-cell">Manual Costs</th>
+        <th class="d-sm-table-cell d-md-none">Edit</th>
+      </tr>
+    </thead>
+    <!-- Load Table Rows Dynamically -->
+    <tbody id="setting-list"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}"
+           hx-trigger="load"
+           hx-target="this"
+           hx-swap="outerHTML">
+      {% for _ in "x"|rjust:10 %}
+        <tr>
+          <td>
+            <span class="placeholder col-4"></span>
+          </td>
+          <td>
+            <span class="placeholder col-14"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-6"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-6"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-4"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-2"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-4"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-4"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-2"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-2"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-2"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-6"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-6"></span>
+          </td>
+          <td class="d-none d-sm-table-cell">
+            <span class="placeholder col-4"></span>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- Pagination & Submit Button Row -->
+<div class="d-flex align-items-center justify-content-between mt-2">
+  <!-- Pagination Controls (Left-Aligned) -->
+  <div id="pagination-controls"
+       hx-get="{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}"
+       hx-trigger="load"
+       hx-target="this"
+       hx-swap="outerHTML"></div>
+</div>
+<script>
+  function updateHeaders() {
+    const reviewFilter = document.getElementById("review-filter");
+    const headerRow = document.querySelector("#dynamic-setting-table thead tr");
+    if (!reviewFilter || !headerRow) return;
+
+    const value = reviewFilter.value;
+    console.log("updateHeaders triggered, value:", value);
+    if (value === "manual_setting_review") {
+      if (!document.getElementById("header-new-order-point")) {
+        const thNewOrderPoint = document.createElement("th");
+        thNewOrderPoint.id = "header-new-order-point";
+        thNewOrderPoint.textContent = "New Order Point";
+        headerRow.appendChild(thNewOrderPoint);
+
+        const thManualSettings = document.createElement("th");
+        thManualSettings.id = "header-manual-settings-to-keep";
+        thManualSettings.textContent = "Manual Settings to Keep";
+        headerRow.appendChild(thManualSettings);
+        console.log("Headers added.");
+      }
+    } else {
+      const thNewOrderPoint = document.getElementById("header-new-order-point");
+      const thManualSettings = document.getElementById("header-manual-settings-to-keep");
+      if (thNewOrderPoint) thNewOrderPoint.remove();
+      if (thManualSettings) thManualSettings.remove();
+      console.log("Headers removed.");
+    }
+  }
+
+  // Attach on initial page load.
+  document.addEventListener("DOMContentLoaded", function() {
+    const reviewFilter = document.getElementById("review-filter");
+    if (reviewFilter) {
+      // (Optional) Attach change listener if you need immediate feedback on user changes.
+      reviewFilter.addEventListener("change", updateHeaders);
+      // Run once on initial load.
+      updateHeaders();
+    }
+  });
+
+  // Listen for HTMX swaps on the row container.
+  document.body.addEventListener("htmx:afterSwap", function(evt) {
+    // Check if the swapped element is the row container.
+    if (evt.detail.target.id === "setting-list") {
+      // Now update the headers after the rows have been loaded.
+      updateHeaders();
+    }
+  });
+</script>

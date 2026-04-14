@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filter_tags %}
+
+{% block regional_stock_list_active %}
+  active
+{% endblock regional_stock_list_active %}
+{% block content %}
+  <div class="card text-primary">
+    <div class="card-header d-flex align-items-center justify-content-between py-2">
+      <!-- Title & Breadcrumb -->
+      <div class="d-flex align-items-center">
+        <p class="card-title text-muted fw-semibold mb-0 small me-3">Regional Stock List Management</p>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-sm mb-0 align-items-center">
+            <li class="breadcrumb-item">
+              <a class="text-muted text-decoration-none small"
+                 href="{% url 'prodbranch_setting_management:regional_stock_list' %}">Regions</a>
+            </li>
+            <li class="breadcrumb-item active text-muted small" aria-current="page">{{ region.name }}</li>
+          </ol>
+        </nav>
+      </div>
+      <!-- Help Button -->
+      <a class="btn btn-warning btn-sm d-flex align-items-center ms-auto px-2 py-1"
+         data-bs-toggle="modal"
+         data-bs-target="#HelpModal"
+         hx-get="{% url 'prodbranch_setting_management:branch_setting_help' %}"
+         hx-trigger="click"
+         hx-target="#help-modal"
+         hx-swap="innerHTML"
+         hx-indicator="#spinner">
+        <i class="bi bi-info-circle me-1"></i> Help
+      </a>
+    </div>
+    <div class="card-body">
+      <!-- Overall Metrics Section -->
+      <div class="d-flex flex-column flex-grow-1 bg-white mb-2 rounded text-primary">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h4 class="fw-bold text-primary mb-0">Regional Stock List ({{ region.name }})</h4>
+          <hr class="flex-grow-1 ms-3 me-3 text-muted" />
+        </div>
+        <div hx-get="{% url 'prodbranch_setting_management:edit_regional_stock_list' region_slug=region.slug %}"
+             hx-trigger="load"
+             hx-target="this">{% include 'partials/loading_box.html' %}</div>
+      </div>
+    </div>
+  </div>
+  <!-- Help Modal -->
+  <div class="modal fade {% if form.errors %}show{% endif %} text-primary"
+       id="HelpModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" id="help-modal"></div>
+    </div>
+  </div>
+  <!-- Add RSL Modal -->
+  <div class="modal fade" id="AddRslModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" id="add-rsl-modal"></div>
+    </div>
+  </div>
+  <div class="modal fade {% if form.errors %}show{% endif %} text-primary"
+       id="BranchStockingList">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" id="branch-stocking-list"></div>
+    </div>
+  </div>
+{% endblock content %}

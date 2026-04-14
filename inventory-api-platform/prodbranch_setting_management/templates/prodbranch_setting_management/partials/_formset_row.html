@@ -1,0 +1,192 @@
+{% load filter_tags %}
+
+<tr id="setting-{{ prodbranch.id }}">
+  <td>{{ prodbranch.product.product }}</td>
+  <td class="d-flex justify-content-between align-items-center">
+    <span class="truncated-description"
+          title="{{ prodbranch.product.product_desc }}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="right">{{ prodbranch.product.product_desc }}</span>
+    <div class="d-flex flex-column text-end ms-2">
+      <!-- RSL Badge -->
+      <span class="badge {% if prodbranch.region_stock_list_flag %}bg-primary border border-secondary text-light {% else %}bg-light border text-muted{% endif %}">
+        RSL
+      </span>
+      <!-- VAP Badge -->
+      <span class="badge {% if prodbranch.product_vap_flag %}bg-primary border border-secondary text-light {% else %}bg-light border text-muted{% endif %}">
+        VAP
+      </span>
+    </div>
+  </td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.product.vendor_model }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.product.buy_line.buy_line }}</td>
+  <!-- Editable Stock Flag -->
+  <td class="d-none d-sm-table-cell pt-1 pb-0">
+    <div class="d-flex flex-column align-items-center">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-control {{ flag_class }} d-flex justify-content-center align-items-center">
+          <!-- Hidden input to ensure checkbox always submits -->
+          <input type="hidden" name="stockflag_change" value="off" />
+          <input type="checkbox"
+                 class="form-check-input m-0 p-0"
+                 name="stockflag_change"
+                 {% if form.stock_flag.value %}checked{% endif %}
+                 hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+                 hx-trigger="change"
+                 hx-target="#setting-{{ prodbranch.id }}"
+                 hx-swap="outerHTML"
+                 hx-include="#review-filter, closest form" />
+        </div>
+      </form>
+      <span class="text-center small text-muted m-0 p-0"
+            title="Last Date Changed: {{ prodbranch.last_stock_flag_date }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom">{{ prodbranch.last_stock_flag_date }}</span>
+    </div>
+  </td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.rank }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.average_cost|value_formatter:"dollars" }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.monthly_demand|value_formatter:"quantity" }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.sales_30|value_formatter:"quantity" }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.order_point|value_formatter:"count" }}</td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.line_point|value_formatter:"count" }}</td>
+  {% if prodbranch.dc_purchased_flag %}
+    {# Non-editable view for Buy Pack #}
+    <td class="d-none d-sm-table-cell">
+      <div>
+        {{ prodbranch.buy_pack }}
+        <div class="small text-muted">DC Purchased</div>
+      </div>
+    </td>
+
+    {# Non-editable view for Divisibility Flag #}
+    <td class="d-none d-sm-table-cell">
+      <div>
+        {{ prodbranch.buy_pack_div }}
+        <div class="small text-muted">DC Purchased</div>
+      </div>
+    </td>
+
+  {% else %}
+    {# Editable Buy Pack #}
+    <td class="d-none d-sm-table-cell">
+      <form method="post">
+        {% csrf_token %}
+        <input
+          type="number"
+          name="buy_pack_change"
+          value="{{ form.buy_pack.value|default_if_none:'' }}"
+          class="form-control form-control-sm"
+          min="0"
+          hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+          hx-trigger="change"
+          hx-target="#setting-{{ prodbranch.id }}"
+          hx-swap="outerHTML"
+          hx-include="closest form" />
+      </form>
+    </td>
+
+    {# Editable Divisibility Checkbox #}
+    <td class="d-none d-sm-table-cell pt-1 pb-0">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-control {{ buy_pack_divisibility_class }} d-flex justify-content-center align-items-center">
+          <input type="hidden" name="buy_pack_divisibility_change" value="off" />
+          <input
+            type="checkbox"
+            class="form-check-input m-0"
+            name="buy_pack_divisibility_change"
+            {% if form.buy_pack_div.value %}checked{% endif %}
+            hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+            hx-trigger="change"
+            hx-target="#setting-{{ prodbranch.id }}"
+            hx-swap="outerHTML"
+            hx-include="closest form" />
+        </div>
+      </form>
+    </td>
+  {% endif %}
+  <!-- Editable Minimum -->
+  <td class="d-none d-sm-table-cell pt-1 pb-0">
+    <div class="d-flex flex-column align-items-center">
+      <form method="post">
+        {% csrf_token %}
+        <input type="number"
+               name="manual_minimum_change"
+               value="{{ form.manual_minimum.value }}"
+               class="form-control form-control-sm responsive-input {{ min_class }}"
+               hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+               hx-trigger="keyup changed delay:300ms"
+               hx-target="#setting-{{ prodbranch.id }}"
+               hx-swap="outerHTML"
+               hx-include="#review-filter, closest form" />
+      </form>
+      <span class="text-center small text-muted m-0 p-0"
+            title="Last Date Changed: {{ prodbranch.last_minimum_date }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom">{{ prodbranch.last_minimum_date }}</span>
+    </div>
+  </td>
+  <!-- Editable Maximum -->
+  <td class="d-none d-sm-table-cell pt-1 pb-0">
+    <div class="d-flex flex-column align-items-center">
+      <form method="post">
+        {% csrf_token %}
+        <input type="number"
+               name="manual_maximum_change"
+               value="{{ form.manual_maximum.value }}"
+               class="form-control form-control-sm responsive-input {{ max_class }}"
+               hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+               hx-trigger="keyup changed delay:300ms"
+               hx-target="#setting-{{ prodbranch.id }}"
+               hx-swap="outerHTML"
+               hx-include="#review-filter, closest form" />
+      </form>
+      <span class="text-center small text-muted m-0 p-0"
+            title="Last Date Changed: {{ prodbranch.last_maximum_date }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom">{{ prodbranch.last_maximum_date }}</span>
+    </div>
+  </td>
+  <td class="d-none d-sm-table-cell">{{ prodbranch.manual_cost|value_formatter:"dollars" }}</td>
+  <!-- Only a edit button for small screens -->
+  <td class="d-sm-table-cell d-md-none">
+    <a class="btn btn-secondary fw-bold ms-auto"
+       data-bs-toggle="modal"
+       data-bs-target="#CreateSettingModal"
+       hx-get="{% url 'prodbranch_setting_management:stock_settings_edit' prodbranch.id %}"
+       hx-target="#create-setting-modal"
+       hx-trigger="click"
+       hx-swap="innerHTML"
+       hx-indicator="#spinner"
+       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+      <i class="bi bi-pencil-square me-1"></i>
+    </a>
+  </td>
+  {% if manual_setting_review_filter %}
+    <td class="d-none d-sm-table-cell">{{ prodbranch.new_op|value_formatter:"count" }}</td>
+    <td class="d-none d-sm-table-cell"
+        data-bs-toggle="tooltip"
+        data-bs-placement="left"
+        title="{{ prodbranch.manual_setting_removal_reason }}">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-control form-control-sm w-auto d-flex justify-content-center align-items-center">
+          <!-- Hidden input to ensure checkbox always submits -->
+          <input type="hidden" name="keep_manual_settings_flag" value="off" />
+          <input type="checkbox"
+                 class="form-check-input m-0 p-0"
+                 name="keep_manual_settings_flag"
+                 {% if prodbranch.keep_manual_settings_flag %}checked{% endif %}
+                 hx-post="{% url 'prodbranch_setting_management:update_pending_change' prodbranch.id %}"
+                 hx-trigger="change"
+                 hx-target="#setting-{{ prodbranch.id }}"
+                 hx-swap="outerHTML"
+                 hx-include="#review-filter, closest form" />
+          <i class="bi bi-question-circle-fill text-warning small ms-2 m-0 p-0"></i>
+        </div>
+      </form>
+    </td>
+  {% endif %}
+</tr>

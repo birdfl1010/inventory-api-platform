@@ -1,0 +1,13 @@
+{% for prod in results %}
+  <a href="#"
+     class="dropdown-item"
+     hx-get="{% url 'prodbranch_setting_management:stock_settings_edit' prod_branch_id=prod.id %}"
+     hx-target="#create-setting-modal"
+     hx-trigger="click"
+     hx-swap="innerHTML"
+     hx-indicator="#spinner"
+     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {{ prod.product.product_desc }} ({{ prod.product.vendor_model }})
+  </a>
+{% endfor %}
+{% if not results %}<p class="dropdown-item text-muted">No products found</p>{% endif %}

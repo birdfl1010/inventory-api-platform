@@ -1,0 +1,187 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>
+      {% block title %}
+        Inventory SMS
+      {% endblock title %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+          content="Inventory Stock Management System - Analytics Portal" />
+    <meta name="author" content="Inventory Supply Chain" />
+    <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+    {% block css %}
+      <!-- Third-party CSS -->
+      <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+      <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" />
+      <link href="{% static 'css/datatables.min.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/datatables.fixedcolumns.min.css' %}"
+            rel="stylesheet" />
+      <!-- project-specific CSS -->
+      <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+    {% endblock css %}
+    {% block javascript %}
+      <!-- Third-party javascript -->
+      <script src="{% static 'js/bootstrap.bundle.js' %}" defer></script>
+      <script src="{% static 'js/htmx.min.js' %}" defer></script>
+      <script src="{% static 'js/debug.js' %}" defer></script>
+      <script src="{% static 'js/jquery.js' %}"></script>
+      <script src="{% static 'js/datatables.min.js' %}"></script>
+      <script src="{% static 'js/datatables.bootstrap5.min.js' %}"></script>
+      <script src="{% static 'js/datatables.fixedcolumns.min.js' %}"></script>
+      <script src="{% static 'js/datatables.fixedcolumns.bootstrap5.min.js' %}"></script>
+      <!-- project-specific Javascript -->
+      <script src="{% static 'js/project.js' %}" defer></script>
+      <script src="{% static 'htmx_messages/toasts.js' %}" defer></script>
+    {% endblock javascript %}
+    {% block additional_javascript %}
+    {% endblock additional_javascript %}
+  </head>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-primary">
+    <main>
+      <div>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top p-0 shadow">
+          <div class="container-fluid">
+            <button class="navbar-toggler navbar-toggler-right"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sidebarMenu"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'home' %}">
+              <img src="{% static 'images/inventory-cropped.png' %}"
+                   class="nav-brand-image"
+                   alt="inventory" />
+            </a>
+            <div class="d-none d-lg-block">
+              <ul class="navbar-nav ms-auto">
+                {% if request.user.is_authenticated %}
+                  {% comment %} <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
+                  </li> {% endcomment %}
+                  <li class="nav-item">
+                    {# URL provided by django-allauth/account/urls.py #}
+                    <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
+                  </li>
+                {% else %}
+                  {% if ACCOUNT_ALLOW_REGISTRATION %}
+                    <li class="nav-item">
+                      {# URL provided by django-allauth/account/urls.py #}
+                      <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
+                    </li>
+                  {% endif %}
+                  <li class="nav-item">
+                    {# URL provided by django-allauth/account/urls.py #}
+                    <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- Sidebar -->
+        <nav id="sidebarMenu"
+             class="collapse d-lg-block sidebar collapse bg-white">
+          <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+              {% if request.user.is_authenticated %}
+                {% comment %} <a href="{% url 'home' %}" class="list-group-item list-group-item-action d-flex py-2 {% block home_active %}{% endblock home_active %}" aria-current="true">
+                  <i class="bi bi-house me-3"></i><span>Welcome Page</span>
+                </a> {% endcomment %}
+                <a href="{% url 'prodbranch_setting_management:branch_settings_list' %}"
+                   class="list-group-item list-group-item-action d-flex py-2 {% block prodbranch_settings_active %}{% endblock prodbranch_settings_active %}"
+                   aria-current="true">
+                  <i class="bi bi-sliders me-3"></i><span>Stock Setting Management</span>
+                </a>
+                <a href="{% url 'prodbranch_setting_management:regional_stock_list' %}"
+                   class="list-group-item list-group-item-action d-flex py-2 {% block regional_stock_list_active %}{% endblock regional_stock_list_active %}"
+                   aria-current="true">
+                  <i class="bi bi-list-ol me-3"></i><span>Regional Stock List Management</span>
+                </a>
+                {% if request.user.is_staff or request.user.is_superuser %}
+                  <a href="{% url 'admin:index' %}"
+                     class="list-group-item list-group-item-action d-flex py-2 mt-auto">
+                    <i class="bi bi-gear me-3"></i><span class="me=auto">Admin</span>
+                  </a>
+                {% endif %}
+              {% else %}
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex py-2 mt-auto">
+                  <i class="bi bi-lock me-3"></i><span class="me=auto">Locked</span>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div>
+        <section class="bg-primary text-light p-4">
+          {% if request.user.is_authenticated == False %}<div class="container bg-white text-primary rounded py-4">{% endif %}
+            {% block content %}
+            {% endblock content %}
+            {% if request.user.is_authenticated == False %}</div>{% endif %}
+        </section>
+      </div>
+    </main>
+    <div id="spinner" class="htmx-indicator indicator-style">
+      <div class="spinner-grow text-secondary">
+        <span class="sr-only"></span>
+      </div>
+    </div>
+    {% include 'htmx_messages/toasts.html' %}
+    <!-- /container -->
+    {% block modal %}
+    {% endblock modal %}
+    {% block inline_javascript %}
+      <script>
+        $(document).on('show.bs.modal', '.modal', function() {
+          const zIndex = 1040 + 10 * $('.modal:visible').length;
+          $(this).css('z-index', zIndex);
+          setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack'));
+        });
+
+        $(document).on('hidden.bs.modal', '.modal',
+          () => $('.modal:visible').length && $(document.body).addClass('modal-open'));
+      </script>
+    {% endblock inline_javascript %}
+  </body>
+</html>
+<script>
+  // This runs on page load.
+  document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  document.body.addEventListener("htmx:afterSwap", function(evt) {
+    // Reinitialize all tooltip elements on the page.
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  document.body.addEventListener("htmx:beforeSwap", function(evt) {
+    // Dispose all active tooltip instances
+    const tooltipElements = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipElements.forEach(function(el) {
+      const instance = bootstrap.Tooltip.getInstance(el);
+      if (instance) {
+        instance.dispose();
+      }
+    });
+  });
+</script>

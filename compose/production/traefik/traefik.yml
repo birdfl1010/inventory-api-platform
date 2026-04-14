@@ -1,0 +1,33 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ":80"
+
+http:
+  routers:
+    web-router:
+      # Catch all requests regardless of the Host header.
+      rule: "PathPrefix(`/`)"
+      entryPoints:
+        - web
+      middlewares:
+        - csrf
+      service: django
+
+  middlewares:
+    csrf:
+      headers:
+        hostsProxyHeaders: ["X-CSRFToken"]
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: "http://django:5000"
+
+providers:
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true

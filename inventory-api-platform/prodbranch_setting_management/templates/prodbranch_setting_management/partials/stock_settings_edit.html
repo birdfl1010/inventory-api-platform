@@ -1,0 +1,75 @@
+{% load filter_tags %}
+
+<div class="modal-header">
+  <h1 class="modal-title fs-5">Edit/Create Setting</h1>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <!-- Informational Fields -->
+  <div class="row">
+    <div class="col-md-6">
+      <p>
+        <strong>Branch ID:</strong> {{ prod_branch.branch.pk }}
+      </p>
+      <p>
+        <strong>Product ID:</strong> {{ prod_branch.product.pk }}
+      </p>
+      <p>
+        <strong>Description:</strong> {{ prod_branch.product.product_desc }}
+      </p>
+      <p>
+        <strong>Buy Line ID:</strong> {{ prod_branch.product.buy_line }}
+      </p>
+      <p>
+        <strong>Price Line ID:</strong> {{ prod_branch.product.price_line }}
+      </p>
+      <p>
+        <strong>Monthly Demand:</strong> {{ prod_branch.monthly_demand|value_formatter:"count" }}
+      </p>
+      <p>
+        <strong>Order Point:</strong> {{ prod_branch.order_point|value_formatter:"count" }}
+      </p>
+      <p>
+        <strong>Line Point:</strong> {{ prod_branch.line_point|value_formatter:"count" }}
+      </p>
+      <p>
+        <strong>Past 30-Day Sales:</strong> {{ prod_branch.sales_qty_30|value_formatter:"count" }}
+      </p>
+    </div>
+    <div class="col-md-6 d-flex flex-column align-items-center">
+      <!-- Product Image -->
+      <div class="image-container mb-3">
+        <!-- mb-3 adds spacing -->
+        {% if prod_branch.product.image_url %}
+          <img src="{{ prod_branch.product.image_url }}"
+               alt="Product Image"
+               class="product-image" />
+        {% else %}
+          <img src="https://placehold.co/600x400"
+               alt="Placeholder Image"
+               class="product-image" />
+        {% endif %}
+      </div>
+      {% comment %} <!-- Sales Chart -->
+      <div class="chart-container"
+           hx-get="{% url 'prodbranch_setting_management:sales_chart' product=prod_branch.product.product branch=prod_branch.branch.branch %}"
+           hx-trigger="load"
+           hx-target="this">{% include 'partials/loading_box.html' %}</div> {% endcomment %}
+    </div>
+  </div>
+  <!-- Editable Form -->
+  <form method="post"
+        action="{% url 'prodbranch_setting_management:stock_settings_edit' prod_branch_id=prod_branch.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <!-- Dynamic Cost Calculation -->
+    <div id="manual-settings-cost" class="text-muted mt-3">Manual Settings Cost: $0.00</div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>

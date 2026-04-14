@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h1 class="modal-title fs-5">Manual Limit Warning</h1>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <p class="fw-bold text-danger">⚠️ Your branch has reached or exceeded the manual limit.</p>
+  <p>
+    You are allowed <strong>{{ manual_limit }}</strong> manual settings and currently have <strong>{{ manual_settings }}</strong>.
+  </p>
+  <p>Please delete existing settings before adding new ones.</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

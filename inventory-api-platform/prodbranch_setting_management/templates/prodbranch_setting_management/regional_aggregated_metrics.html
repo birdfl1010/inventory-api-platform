@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% load filter_tags %}
+
+{% block regional_stock_list_active %}
+  active
+{% endblock regional_stock_list_active %}
+{% block content %}
+  <div class="card text-primary">
+    <div class="card-header d-flex align-items-center justify-content-between py-2">
+      <!-- Left Section: Title & Breadcrumb -->
+      <div class="d-flex align-items-center">
+        <p class="card-title text-muted fw-semibold mb-0 small me-3">Regional Stock Lists</p>
+      </div>
+      <!-- Right Section: Help Button -->
+      <a class="btn btn-warning btn-sm d-flex align-items-center ms-auto px-2 py-1"
+         data-bs-toggle="modal"
+         data-bs-target="#HelpModal"
+         hx-get="{% url 'prodbranch_setting_management:branch_setting_help' %}"
+         hx-trigger="click"
+         hx-target="#help-modal"
+         hx-swap="innerHTML"
+         hx-indicator="#spinner">
+        <i class="bi bi-info-circle me-1"></i> Help
+      </a>
+    </div>
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h4 class="fw-bold text-primary mb-0">Regional Stocking Metrics</h4>
+        <hr class="flex-grow-1 ms-3 me-3 text-muted" />
+      </div>
+      <div class="table-responsive mx-2 mb-2">
+        <table id="region-table"
+               class="table table-sm table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th># Branches</th>
+              <th># Stocked Items</th>
+              <th>Avg. Stocked Items per Branch</th>
+              <th># RSL Items</th>
+              <th>Avg. RSL Items Stocked per Branch</th>
+              <th>Compliancy %</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for region in region_metrics %}
+              <tr>
+                <td>{{ region.branch__region__name }}</td>
+                <td>{{ region.num_branches|value_formatter:"count" }}</td>
+                <td>{{ region.stocked_items|value_formatter:"count" }}</td>
+                <td>{{ region.avg_stocked_items|value_formatter:"count" }}</td>
+                <td>{{ region.rsl_items|value_formatter:"count" }}</td>
+                <td>{{ region.avg_rsl_items|value_formatter:"count" }}</td>
+                <td>{{ region.compliancy|value_formatter:"percent" }}</td>
+                <td>
+                  <a class="btn btn-secondary btn-sm fw-bold ms-auto"
+                     href="{% url 'prodbranch_setting_management:regional_stock_list_base' region_slug=region.branch__region__slug %}">
+                    <i class="bi bi-pencil-square me-1"></i><span class="me=auto"></span>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade {% if form.errors %}show{% endif %} text-primary"
+       id="HelpModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" id="help-modal"></div>
+    </div>
+  </div>
+  <script defer>
+    $(document).ready(function() {
+      $('#region-table').DataTable({
+        autoWidth: true,
+        paging: true,
+        searching: true,
+        ordering: true,
+        columnDefs: [{
+          orderable: false,
+          targets: [7] // Disable sorting for the Details column
+        }],
+        order: [
+          [0, 'asc'] // Default sorting on the Region column
+        ],
+        scrollY: '400px', // Set the height for the scrollable body
+        scrollCollapse: true, // Allow collapsing when fewer rows are present
+        scrollX: true, // Enable horizontal scrolling if needed
+        fixedHeader: true, // Keep the header fixed while scrolling
+      });
+    });
+  </script>
+{% endblock content %}

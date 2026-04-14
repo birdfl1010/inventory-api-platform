@@ -1,0 +1,9 @@
+{% load static i18n %}
+
+<div class="d-flex border border-primary justify-contents-between align-items-center loader-div">
+  <img alt="Result loading..."
+       class="htmx-indicator img-fluid d-block mx-auto"
+       width="150"
+       src="{% static 'svg/inventory-loading.svg' %}"
+       id="loader" />
+</div>

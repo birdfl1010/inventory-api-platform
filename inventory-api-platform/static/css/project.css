@@ -1,0 +1,355 @@
+:root {
+  --sidebar-width: 240px;
+  --nav-brand-image-height: 3rem;
+}
+
+.nav-brand-image {
+  height: var(--nav-brand-image-height);
+}
+
+html {
+  font-size: 16px !important;
+}
+
+/* Responsive scaling */
+@media (max-width: 1600px) {
+  html {
+    font-size: 10px; /* Scale down the base size */
+  }
+}
+
+/* Responsive scaling */
+@media (max-width: 1600px) {
+  body {
+    padding-top: calc(var(--nav-brand-image-height) + 1.25rem);
+    zoom: .75;
+  }
+}
+
+body {
+  padding-top: calc(var(--nav-brand-image-height) + 1.25rem);
+}
+
+.alert-debug {
+  color: black;
+  background-color: white;
+  border-color: #d6e9c6;
+}
+
+.alert-error {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+  /* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: var(--sidebar-width);
+  z-index: 600;
+}
+
+/* Adjust the sidebar width for smaller screens */
+@media (max-width: 1600px) {
+  :root {
+    --sidebar-width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 180px; /* Or whatever value suits your layout */
+  }
+}
+
+/* Use the same variable for main padding */
+main {
+  padding-left: var(--sidebar-width);
+}
+
+@media (max-width: 992px) {
+  main {
+    padding-left: 0;
+  }
+}
+
+
+.sidebar .active {
+border-radius: 5px;
+box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.sidebar-sticky {
+position: relative;
+top: 0;
+height: calc(100vh - 48px);
+padding-top: 0.5rem;
+overflow-x: hidden;
+overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.htmx-indicator{
+  opacity:0;
+  transition: opacity 500ms ease-in;
+}
+.htmx-request .htmx-indicator{
+  opacity:1
+}
+.htmx-request.htmx-indicator{
+  opacity:1
+}
+
+.indicator-style {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+}
+
+.loader-div {
+  height: 400px
+}
+
+#loader {
+  border: 16px solid #f3f3f3;
+  /* Light grey */
+  border-top: 16px solid #003057;
+  border-bottom: 16px solid #003057;
+  /* Dark Green */
+  border-radius: 50%;
+  width: 140px;
+  height: 140px;
+  animation: spinloader 2s linear infinite;
+}
+
+#loader img {
+  width: 100px;
+  animation: spinlogo 2s linear infinite;
+}
+
+@media (max-width: 1600px) {
+  #loader {
+    width: 80px;
+    height: 80px;
+    border-width: 10px;
+  }
+
+  .spinner-grow {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+
+.center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+@keyframes spinloader {
+  0% {
+      transform: rotate(0deg);
+  }
+
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+@keyframes spinlogo {
+  0% {
+      transform: rotate(360deg);
+  }
+
+  100% {
+      transform: rotate(0deg);
+  }
+}
+
+.spinner-grow {
+  width: 6rem;
+  height: 6rem
+}
+
+.truncated-description {
+  max-width: 18rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;      /* adds ellipsis if text overflows */
+  white-space: normal;
+  line-height: 1.2em;           /* adjust based on your design */
+  max-height: 2.4em;            /* 2 lines * line-height */
+}
+
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table.dataTable th, table.dataTable td {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  table.dataTable th, table.dataTable td {
+    white-space: normal; /* Allow wrapping on smaller screens */
+    font-size: 0.75rem; /* Reduce font size */
+  }
+}
+
+.btn-table {
+  --bs-btn-padding-y: 0rem;
+  --bs-btn-padding-x: 0rem;
+  --bs-btn-font-size: .75rem;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+#product-options {
+  display: block;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+#product-options:empty {
+  display: none;
+}
+
+#product-options a {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#product-options a:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  #product-options {
+    max-height: 150px;
+    font-size: 0.75rem;
+  }
+}
+
+
+.table-responsive {
+  overflow: hidden;
+}
+
+.dataTables_scroll {
+  position: relative;
+}
+
+.dataTables_scrollBody {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+
+.image-container {
+  width: 300px;
+  height: 200px;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.product-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.chart-container {
+  width: 400px;
+  height: 200px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+@media (max-width: 768px) {
+  .chart-container, .image-container {
+    width: 90%; /* Scale down dynamically */
+    height: auto;
+    max-width: 300px;
+  }
+}
+
+.table td, .table th {
+  padding: 0.5rem;
+}
+.table {
+  font-size: 0.85rem;
+}
+
+.skeleton-badge {
+  width: 180px;
+  height: 32px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 12px;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+.responsive-input {
+  width: auto !important;
+  min-width: 30px !important;
+  max-width: 70px; /* Adjust as needed */
+}
+
+
+.table-responsive-scroll {
+  max-height: 75vh;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+}
+
+.dropdown-menu:empty {
+  display: none;
+}
+
+.dropdown-menu:not(:empty) {
+  display: block;
+}

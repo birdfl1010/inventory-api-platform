@@ -1,0 +1,10 @@
+<div id="applied-filters" class="mb-1">
+  {% if applied_filters %}
+    {% for label, value in applied_filters.items %}
+      {% if value %}<span class="badge bg-info text-dark me-1">{{ label }}: {{ value }}</span>{% endif %}
+    {% endfor %}
+    <a href="#"
+       class="badge bg-warning text-dark me-1"
+       onclick="location.reload(); return false;">Reset Filters</a>
+  {% endif %}
+</div>

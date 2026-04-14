@@ -1,0 +1,28 @@
+{% load filter_tags %}
+
+<div id="regional-stock-list-rows"
+     class="table-responsive mb-1 table-responsive-scroll position-relative">
+  <table class="table table-sm table-striped table-hover table-bordered table-light mb-0">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Description</th>
+        <th># Stocking Branches</th>
+        <th># Selling Branches</th>
+        <th>Total 30d Sales Qty</th>
+        <th>Avg 30d Sale Qty</th>
+        <th>VAP Flag</th>
+        <th>RSL Flag</th>
+        <th>RSL Initial Qty</th>
+        <th>Calculated RSL Cost</th>
+        <th>Additional RSL Cost</th>
+        <th>View Branch Metrics</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in product_data %}
+        {% include 'prodbranch_setting_management/partials/_regional_stock_list_row.html' %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,17 @@
+{% load filter_tags %}
+
+<!-- Stats Badges -->
+<div class="d-flex flex-wrap gap-2">
+  <span class="badge bg-primary text-white fs-6">
+    <i class="bi bi-box-seam me-1"></i> Stocked Products:
+    <strong>{{ stats.0.stock_products|value_formatter:"count" }}</strong>
+  </span>
+  <span class="badge bg-warning text-dark fs-6">
+    <i class="bi bi-tools me-1"></i> Manual Settings:
+    <strong>{{ stats.0.manual_settings_count|value_formatter:"count" }} / {{ stats.0.effective_limit|value_formatter:"count" }}</strong>
+  </span>
+  <span class="badge bg-success text-white fs-6">
+    <i class="bi bi-cash-stack me-1"></i> Override Cost:
+    <strong>{{ stats.0.manual_cost|value_formatter:"dollars" }}</strong>
+  </span>
+</div>

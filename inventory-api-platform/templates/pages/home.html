@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load static i18n %}
+
+{% block home_active %}
+  active
+{% endblock home_active %}
+{% block content %}
+  <div class="card text-primary">
+    <div class="card-header d-flex align-items-center">
+      <p class="card-title text-muted mb-0">Welcome</p>
+      <a class="btn btn-warning fw-bold ms-auto"
+         data-bs-toggle="modal"
+         data-bs-target="#HelpModal"
+         hx-get="{% url 'about' %}"
+         hx-trigger="click"
+         hx-target="#help-modal"
+         hx-swap="innerHTML"
+         hx-indicator="#spinner">
+        <i class="bi bi-info-circle me-1"></i><span class="me=auto">Help</span>
+      </a>
+    </div>
+    <div class="card-body">
+      <div class="containter mb-4">
+        <h1 class="text-center">Welcome to the Inventory Stock Management Portal!</h1>
+      </div>
+      <div class="d-sm-flex align-items-center justify-content-between">
+        <div class="ms-lg-0 ms-xl-5 ps-lg-0 ps-xl-5">
+          <div class="container mb-lg-3 mb-xl-5">
+            <h2>Min/Max Management Portal</h2>
+            <p>
+              Click the below button to access the Stock Manual Minimum and Maximum Management Portal.
+              This portal allows you to easily manage you manual stock setting and keep your customers happy...
+            </p>
+            <button class="btn btn-primary" href="#">Access Portal!</button>
+          </div>
+          <div class="container mb-lg-3 mb-xl-5">
+            <h2>Need Help?</h2>
+            <p>If you need help, press the 'Help' button in the top right hand corner of this page!</p>
+          </div>
+        </div>
+        <div>
+          <div class="d-none d-md-flex">
+            <img class="img-fluid"
+                 src="{% static 'images/home-page-analytics-image.png' %}"
+                 alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade {% if form.errors %}show{% endif %} text-primary"
+       id="AboutModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" id="about-modal"></div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,70 @@
+<div id="pagination-controls" class="d-flex align-items-center">
+  <nav aria-label="Page navigation" class="mb-0">
+    <ul class="pagination pagination-sm justify-content-center mb-0">
+      <!-- First Page -->
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a class="page-link small"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}?page=1"
+           hx-target="#setting-list"
+           hx-swap="outerHTML"
+           hx-push-url="false"
+           hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+           hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?page=1&search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); ">
+          First
+        </a>
+      </li>
+      <!-- Previous Page -->
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a class="page-link small"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}?page={{ previous_page }}"
+           hx-target="#setting-list"
+           hx-swap="outerHTML"
+           hx-push-url="false"
+           hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+           hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?page={{ previous_page }}&search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); ">
+          Previous
+        </a>
+      </li>
+      <!-- Page Numbers -->
+      {% for num in page_obj.paginator.page_range %}
+        {% if num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" and num >= 1 and num <= paginator.num_pages %}
+          <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+            <a class="page-link small"
+               hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}?page={{ num }}"
+               hx-target="#setting-list"
+               hx-swap="outerHTML"
+               hx-push-url="false"
+               hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+               hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?page={{ num }}&search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); ">
+              {{ num }}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      <!-- Next Page -->
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a class="page-link small"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}?page={{ next_page }}"
+           hx-target="#setting-list"
+           hx-swap="outerHTML"
+           hx-push-url="false"
+           hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+           hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?page={{ next_page }}&search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); ">
+          Next
+        </a>
+      </li>
+      <!-- Last Page -->
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a class="page-link small"
+           hx-get="{% url 'prodbranch_setting_management:load_formset_rows' branch.pk %}?page={{ paginator.num_pages }}"
+           hx-target="#setting-list"
+           hx-swap="outerHTML"
+           hx-push-url="false"
+           hx-include="#search-input, #buy_line-search, #price_line-search, #review-filter, input[name='vap_filter'], input[name='rsl_filter'], #sort-field, #sort-direction"
+           hx-on::after-request=" htmx.ajax('GET', '{% url 'prodbranch_setting_management:load_pagination_controls' branch.pk %}?page={{ paginator.num_pages }}&search_query=' + encodeURIComponent(document.querySelector('#search-input').value) + '&review_filter=' + encodeURIComponent(document.querySelector('#review-filter').value) + '&buy_line_filter=' + encodeURIComponent(document.querySelector('#buy_line-search').value) + '&price_line_filter=' + encodeURIComponent(document.querySelector('#price_line-search').value) + '&vap_filter=' + (document.querySelector('input[name=&quot;vap_filter&quot;]:checked') ? document.querySelector('input[name=&quot;vap_filter&quot;]:checked').value : '') + '&rsl_filter=' + (document.querySelector('input[name=&quot;rsl_filter&quot;]:checked') ? document.querySelector('input[name=&quot;rsl_filter&quot;]:checked').value : '') + '&sort_field=' + encodeURIComponent(document.querySelector('#sort-field').value) + '&sort_direction=' + encodeURIComponent(document.querySelector('#sort-direction').value), {target: '#pagination-controls', swap: 'outerHTML'} ); ">
+          Last
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,88 @@
+@startuml
+
+' Entities
+class User {
+    +id : Integer
+    +username : String
+    +password : String
+    +email : String
+}
+
+class UserBranchAccess {
+    +id : Integer
+    +user : ForeignKey(User)
+    +branch : ForeignKey(Branch)
+}
+
+class BranchSize {
+    +id : Integer
+    +size_description : String
+}
+
+class Branch {
+    +branch : String [PK]
+    +branch_name : String
+    +branch_size : ForeignKey(BranchSize)
+    +division : String
+    +region_name : String
+    +full_address : String
+    +longitude : Decimal
+    +latitude : Decimal
+}
+
+class BuyLine {
+    +buy_line : String [PK]
+    +buy_line_name : String
+}
+
+class PriceLine {
+    +price_line : String [PK]
+    +price_line_name : String
+}
+
+class Product {
+    +product : Integer [PK]
+    +product_desc : String
+    +vendor_model : String
+    +buy_line : ForeignKey(BuyLine)
+    +price_line : ForeignKey(PriceLine)
+    +search_key_words : Array
+}
+
+class ProdBranch {
+    +id : Integer
+    +branch : ForeignKey(Branch)
+    +product : ForeignKey(Product)
+    +stock_flag_binary : Boolean
+    +rank : String
+    +purchasing_branch : ForeignKey(Branch)
+    +average_cost : Float
+    +monthly_demand : Float
+    +sales_qty_30 : Integer
+    +sales_qty_90 : Integer
+    +order_point : Integer
+    +line_point : Integer
+    +manual_minimum : Integer
+    +manual_maximum : Integer
+    +calculated_manual_cost : Float
+}
+
+Class ProdBranchChange {
+    +id : ForeignKey(ProdBranch)
+    +stock_flag_binary_change : Boolean
+    +manual_minimum_change : Integer
+    +manual_maximum_change : Integer
+}
+
+' Relationships
+User "1" -- "0..*" UserBranchAccess : has access
+UserBranchAccess "0..*" -- "1" Branch : to branch
+BranchSize "1" -- "0..*" Branch : to branch
+Branch "1" -- "0..*" ProdBranch : contains
+BuyLine "1" -- "0..*" Product
+PriceLine "1" -- "0..*" Product
+Product "1" -- "0..*" ProdBranch
+Branch "1" -- "0..*" ProdBranch
+ProdBranch "1" -- "1" ProdBranchChange
+
+@enduml

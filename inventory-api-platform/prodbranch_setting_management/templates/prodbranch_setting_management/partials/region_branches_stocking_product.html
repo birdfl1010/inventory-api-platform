@@ -1,0 +1,73 @@
+{% load filter_tags %}
+
+<div class="modal-header">
+  <h1 class="modal-title fs-5">Branches Stocking Product</h1>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <!-- Informational Fields -->
+  <div class="row">
+    <div class="col-md-6">
+      <p>
+        <strong>Product ID:</strong> {{ product.pk }}
+      </p>
+      <p>
+        <strong>Description:</strong> {{ product.product_desc }}
+      </p>
+      <p>
+        <strong>Buy Line ID:</strong> {{ product.buy_line }}
+      </p>
+      <p>
+        <strong>Price Line ID:</strong> {{ product.price_line }}
+      </p>
+      <p>
+        <strong>VAP Flag:</strong> {{ product.vap_flag }}
+      </p>
+    </div>
+    <div class="col-md-6 d-flex flex-column align-items-center">
+      <!-- Product Image -->
+      <div class="image-container mb-3">
+        <!-- mb-3 adds spacing -->
+        {% if product.image_url %}
+          <img src="{{ product.image_url }}"
+               alt="Product Image"
+               class="product-image" />
+        {% else %}
+          <img src="https://placehold.co/600x400"
+               alt="Placeholder Image"
+               class="product-image" />
+        {% endif %}
+      </div>
+    </div>
+    <div class="table-responsive mx-2 mb-2">
+      <table class="table table-sm table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>BranchID</th>
+            <th>StockFlag</th>
+            <th>Monthly Demand</th>
+            <th>30 Day Sales</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prodbranch in prodbranches %}
+            <tr>
+              <td>{{ prodbranch.branch }}</td>
+              <td {% if not prodbranch.stock_flag_binary %}class="bg-warning-muted"{% endif %}>
+                {{ prodbranch.stock_flag_binary }}
+              </td>
+              <td>{{ prodbranch.monthly_demand|value_formatter:"count" }}</td>
+              <td>{{ prodbranch.sales_qty_30|value_formatter:"count" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>

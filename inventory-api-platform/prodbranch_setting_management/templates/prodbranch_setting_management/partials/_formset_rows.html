@@ -1,0 +1,7 @@
+{% load filter_tags %}
+
+<tbody id="setting-list">
+  {% for item in formset_data %}
+    {% include 'prodbranch_setting_management/partials/_formset_row.html' with prodbranch=item.prodbranch form=item.form flag_class=item.flag_class min_class=item.min_class max_class=item.max_class cost_class=item.cost_class %}
+  {% endfor %}
+</tbody>
