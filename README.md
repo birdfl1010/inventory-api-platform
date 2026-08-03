@@ -1,5 +1,33 @@
-# inventory_stock_management
+# Inventory API Platform
+This project demonstrates an API-first platform that integrates legacy ERP data with modern analytics workflows.
+It combines backend APIs, data pipelines, and analytics processing to support both operational workflows and data-driven decision making.
+The platform simulates how enterprise systems expose and orchestrate data across services instead of relying on direct database access.
 
+## Features
+- Python-based API and service layer
+- Data pipelines integrating ERP-style data into an analytics layer
+- Snowflake-style analytics workflows (simulated)
+- Command-based processing for batch data operations
+- Event-driven and scheduled job patterns
+- API-first architecture enabling reusable data services
+
+## Architecture
+ERP Data → Data Pipeline → Analytics Layer → Python APIs → Consumers
+
+- ERP data is extracted and transformed
+- Analytics views are created for reporting and decision-making
+- Python-based commands and APIs orchestrate workflows
+- Data is exposed through APIs instead of direct database access
+
+## Purpose
+This project is a sanitized example of how enterprise platforms evolve from tightly coupled systems into scalable, API-driven architectures.
+It highlights patterns for:
+- Data orchestration
+- API-first design
+- Analytics integration
+- Backend service design
+
+# inventory_stock_management
 Web application developed to support management of stock for Inventory USA
 
 # Table of Contents
@@ -19,74 +47,48 @@ Web application developed to support management of stock for Inventory USA
 - [Directory Diagram](#directory-diagram)
 - [Database UML](#database-uml)
 - [Docker Cookiecutter Docs](#docker-cookiecutter-docs)
-- [To-Do List](#to-do-list)
 
 ---
-
 ## Basic Commands
-
 - Note, application is docker-compose structured, so commands would need to be run through docker:
-
 - local:
-
       $ docker-compose -f docker-compose.local.yml run --rm django...
-
 - production:
-
       $ docker-compose -f docker-compose.production.yml run --rm django...
 
 ### Setting Up Your Users
-
 - Note, running the docker-compose.local.yml will spin up a mailpit service, all emails (incldung verification emails) wil be dropped into this portal as opposed to actually being sent... (See below section on email server)
-
 - To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page.
-
 - To create a **superuser account**, use this command:
-
       $ python manage.py createsuperuser
-
 - Super users will have access to the admin portal via the UI.
 
 ### Data Migrations
-
       $ python manage.py makemigrations
       $ python manage.py makemigrations
 
 ### Shell Interactivity
-
       $ python manage.py shell
 
 ### App Creation
-
 - Note, the django app will be created at the root level, you'll need to move it under the inventory_stock_management directory
-
       $ python manage.py createapp {app_name}
 
 ### Type checks
-
 Running type checks with mypy:
-
     $ mypy inventory_stock_management
 
 ### Test coverage
-
 To run the tests, check your test coverage, and generate an HTML coverage report:
-
     $ coverage run -m pytest
     $ coverage html
     $ open htmlcov/index.html
 
-
 ### Running tests with pytest
-
     $ pytest
-
 ---
-
 ## Email Server
-
 In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [Mailpit](https://github.com/axllent/mailpit) with a web interface is available as docker container.
-
 Container mailpit will start automatically when you will run all docker containers.
 Please check [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally-docker.html) for more details how to start all containers.
 
@@ -104,52 +106,35 @@ You must set the DSN url in production.
 ---
 
 ## Initialization / Deployment
-
 The following details how to initialize or deploy this application.
-
 - configure environment variables (see sample.envs folder for the templates)
-
 - launch the application:
-
       $ docker-compose.{$env}.yml up --build
-
 - Create django database migrations (seperate or detached terminal):
-
       $ docker-compose.{$env}.yml run --rm django python manage.py makemigrations
       $ docker-compose.{$env}.yml run --rm django python manage.py migrate
-
 - load application data (seperate or detached terminal):
-
       $ docker.compose.{env}.yml run --rm django python manage.py load_all_erp_data
-
 - create user within frontend or superuser via command, then authenticate account
-
 - sign into application
-
 ---
 
 ## Production Launch Steps
-
 Follow these steps to launch the application in production:
-
 1. **Create IAM Role with S3 Access & RDS Access**
    - Create an IAM role with permissions to access S3.
    - Also add RDS permissions, if using...
-
 2. **Create S3 Bucket & Postgres RDS DB**
    - If using S3: Create an S3 bucket with an open policy.
    - Also, if using RDS (instead of a dockerized Postgres), create a Postgres RDS database.
-
 3. **Create Security Group**
    - Configure a security group outlining allowed IP addresses.
-
 4. **Launch EC2 Instance**
    - **Instance Type:** m2.large preferred.
    - **Security Group:** Attach the security group created in step 3.
    - **VPC:** Choose a public VPC.
    - **IP Assignment:** Enable auto-assign public IP.
    - **IAM Role:** Attach the IAM role from step 1.
-
 5. **Initialize EC2 Environment**
    - **Access:** SSH into the EC2 instance.
    - **Install Dependencies:** Run the following command to install Docker, Docker Compose, and Git:
@@ -253,7 +238,6 @@ root
 ```
 
 ---
-
 ## Database UML
 
 ![UML Diagram](docs/uml/database.png)
